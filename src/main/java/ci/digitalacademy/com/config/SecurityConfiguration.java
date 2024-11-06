@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                                 .requestMatchers("/authe/**").permitAll()
                                 .requestMatchers("/api/services/**").permitAll()
+                                .requestMatchers("/api/adminResources/**").permitAll()
                                 .requestMatchers("/api/providers/**").hasAuthority("SCOPE_"+ AuthorityConstants.PROVIDER)
                                 .requestMatchers("/api/customers/**").hasAuthority("SCOPE_"+AuthorityConstants.CUSTOMER)
                                 .anyRequest().authenticated()
