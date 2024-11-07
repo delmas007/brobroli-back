@@ -1,15 +1,18 @@
 package ci.digitalacademy.com.service.imp;
 
+import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.model.Provider;
 import ci.digitalacademy.com.model.Role;
 import ci.digitalacademy.com.repository.ProviderRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ProviderService;
+import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.ProviderMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
-import jakarta.persistence.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -32,27 +36,32 @@ public class ProviderServiceImp implements ProviderService {
     private final ProviderMapper providerMapper;
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ValidationService validationService;
 
 
     @Override
     public ProviderDTO saveProvider(ProviderDTO fileProviderDTO) throws IOException {
-        RoleDTO role2 = new RoleDTO();
-        BalanceDTO balanceDTO = new BalanceDTO();
-        balanceDTO.setSum(0f);
-        role2.setRole(AuthorityConstants.PROVIDER);
-        if (fileProviderDTO.getUser() != null){
-            fileProviderDTO.getUser().setRole(role2);
-            fileProviderDTO.getUser().setPassword(bCryptPasswordEncoder.encode(fileProviderDTO.getUser().getPassword()));
+        Provider existingUser = providerRepository.findByUserUserName(fileProviderDTO.getUser().getUserName()).orElse(null);
+        if (existingUser == null) {
+            RoleDTO role2 = new RoleDTO();
+            BalanceDTO balanceDTO = new BalanceDTO();
+            balanceDTO.setSum(0f);
+            role2.setRole(AuthorityConstants.PROVIDER);
+            if (fileProviderDTO.getUser() != null) {
+                fileProviderDTO.getUser().setRole(role2);
+                fileProviderDTO.getUser().setPassword(bCryptPasswordEncoder.encode(fileProviderDTO.getUser().getPassword()));
+            }
+            fileProviderDTO.setBalance(balanceDTO);
+            fileProviderDTO.setCreateAt(LocalDate.now());
+            fileProviderDTO.setSlug(SlugifyUtils.generate(fileProviderDTO.getLastName()));
+            fileProviderDTO.getUser().setActif(true);
+            Provider provider = providerMapper.toEntity(fileProviderDTO);
+            ProviderDTO providerDTO = providerMapper.fromEntity(providerRepository.save(provider));
+            validationService.registerProvider(providerDTO);
+            return providerDTO;
+        }else {
+            throw new EntityNotFoundException("Utilisateur existe deja", ErrorCodes.UTILISATEUR_DEJA_EXIST);
         }
-        fileProviderDTO.setBalance(balanceDTO);
-        fileProviderDTO.setCreateAt(LocalDate.now());
-        fileProviderDTO.setSlug(SlugifyUtils.generate( fileProviderDTO.getLastName()));
-//        if (fileProviderDTO.getFileurlImage() != null && !fileProviderDTO.getFileurlImage().isEmpty()) {
-//            String imageUrl = filtreStorageService.upload(fileProviderDTO.getFileurlImage());
-//            fileProviderDTO.setUrlProfil(imageUrl);
-//        }
-        Provider provider = providerMapper.toEntity(fileProviderDTO);
-        return providerMapper.fromEntity(providerRepository.save(provider));
     }
 
     @Override

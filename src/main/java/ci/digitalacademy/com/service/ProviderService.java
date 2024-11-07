@@ -23,5 +23,7 @@ public interface ProviderService {
 
     ProviderDTO update( FileProviderDTO  providerDTO, Long id) throws IOException;
 
+//    int activationProbider(String code);
+
 
 }
