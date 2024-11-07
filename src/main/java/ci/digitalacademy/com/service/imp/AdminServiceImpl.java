@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,6 +35,13 @@ public class AdminServiceImpl implements AdminService {
         numberUserDTO.setNumberCustomer(listCustomer.size());
         numberUserDTO.setListProvider(listProvider);
         numberUserDTO.setListCustomer(listCustomer);
+        List<ProviderDTO> listProviders = new ArrayList<>();
+        listProvider.forEach(providerDTO -> {
+            if (providerDTO.getService() != null){
+                listProviders.add(providerDTO) ;
+            }
+        });
+        numberUserDTO.setNumberProviderWithService(listProviders.size());
         return numberUserDTO;
     }
 }
