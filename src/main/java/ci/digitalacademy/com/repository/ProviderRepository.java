@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface ProviderRepository extends JpaRepository<Provider, Long> {
     Optional<Provider> findBySlug(String slug);
     Optional<Provider> findProviderByUserId(Long userId);
+    Optional<Provider> findByUserUserName(String username);
+    Optional<Provider> findByEmail(String email);
 }

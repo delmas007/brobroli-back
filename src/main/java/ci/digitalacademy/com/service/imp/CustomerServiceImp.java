@@ -5,11 +5,12 @@ import ci.digitalacademy.com.repository.CustomerRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
-import ci.digitalacademy.com.service.dto.CustomerDTO;
-import ci.digitalacademy.com.service.dto.FileCustomerDTO;
-import ci.digitalacademy.com.service.dto.RoleDTO;
+import ci.digitalacademy.com.service.ValidationService;
+import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +38,7 @@ public class CustomerServiceImp implements CustomerService {
     private final CustomerRepository customerRepository;
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ValidationService validationService;
 
 
     @Override
@@ -49,13 +52,12 @@ public class CustomerServiceImp implements CustomerService {
         }
         customerDTO.setCreateAt(LocalDate.now());
         customerDTO.setSlug(SlugifyUtils.generate(customerDTO.getFirstName()));
-//        if (customerDTO.getFileurlImage() != null && !customerDTO.getFileurlImage().isEmpty()) {
-//            String imageUrl = filtreStorageService.upload(customerDTO.getFileurlImage());
-//            customerDTO.setUrlProfil(imageUrl);
-//        }
+        customerDTO.getUser().setActif(false);
         Customer customer = customerMapper.toEntity(customerDTO);
         customer = repository.save(customer);
-        return customerMapper.fromEntity(customer);
+        CustomerDTO customerDTO1 = customerMapper.fromEntity(customer);
+        validationService.registerCustomer(customerDTO1);
+        return customerDTO1;
     }
 
     @Override

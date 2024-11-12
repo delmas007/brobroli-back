@@ -20,6 +20,7 @@ public class User {
     @Column(unique = true)
     private String userName;
     private String password;
+    private Boolean actif;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")

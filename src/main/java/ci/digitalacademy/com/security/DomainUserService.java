@@ -4,6 +4,8 @@ package ci.digitalacademy.com.security;
 import ci.digitalacademy.com.model.Role;
 import ci.digitalacademy.com.model.User;
 import ci.digitalacademy.com.repository.UserRepository;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,11 +28,11 @@ public class DomainUserService implements UserDetailsService {
         final Optional<User> user = userRepository.findByUserName(username);
 
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
+            throw new EntityNotFoundException("Utilisateur inexistant", ErrorCodes.UTILISATEUR_PAS_TROUVER);
         }
-//        if (!user.get().isActive()) {
-//            throw new IllegalArgumentException("User not active");
-//        }
+        if (!user.get().getActif()) {
+            throw new EntityNotFoundException("Utilisateur pas actif, veuillez contacter les administrateurs",ErrorCodes.UTILISATEUR_NON_ACTIF);
+        }
 
         Role role = user.get().getRole();
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("SCOPE_"+role.getRole());
