@@ -7,9 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CollaborationRepository extends JpaRepository<Collaboration,Long> {
+    Optional<Collaboration> findByServiceIdAndCustomerId(Long serviceId, Long customerId);
+
     @Query("SELECT c FROM Collaboration c WHERE c.service.provider.id = :providerId")
     List<Collaboration> findAllByProviderId(@Param("providerId") Long providerId);
 

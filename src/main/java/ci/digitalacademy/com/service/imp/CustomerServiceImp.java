@@ -2,12 +2,14 @@ package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.repository.CustomerRepository;
+import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
+import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
 import ci.digitalacademy.com.web.exception.EntityNotFoundException;
 import ci.digitalacademy.com.web.exception.ErrorCodes;
@@ -39,20 +41,22 @@ public class CustomerServiceImp implements CustomerService {
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ValidationService validationService;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override
     public CustomerDTO saveCustomer(CustomerDTO customerDTO) throws IOException {
         log.debug("Saving new customer: {}", customerDTO);
         RoleDTO role2 = new RoleDTO();
-        role2.setRole(AuthorityConstants.CUSTOMER);
+        role2= roleRepository.findByRole(AuthorityConstants.CUSTOMER).map(roleMapper::fromEntity).orElse(null);
         if (customerDTO.getUser() != null){
             customerDTO.getUser().setRole(role2);
+            customerDTO.getUser().setActif(false);
             customerDTO.getUser().setPassword(bCryptPasswordEncoder.encode(customerDTO.getUser().getPassword()));
         }
         customerDTO.setCreateAt(LocalDate.now());
         customerDTO.setSlug(SlugifyUtils.generate(customerDTO.getFirstName()));
-        customerDTO.getUser().setActif(false);
         Customer customer = customerMapper.toEntity(customerDTO);
         customer = repository.save(customer);
         CustomerDTO customerDTO1 = customerMapper.fromEntity(customer);

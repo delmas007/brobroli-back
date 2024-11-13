@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Demande de Collaboration</title>
+</head>
+<body>
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #FBFBFB; padding: 20px; text-align: center;">
+    <div style="background-color: #FFFFFF; width: 100%; max-width: 480px; margin: auto; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; border-left: 5px solid #14C0B7;">
+        <div style="background-color: #14C0B7; color: white; padding: 20px; font-size: 18px; text-align: center;">
+            Nouvelle demande de collaboration
+        </div>
+        <div style="padding: 20px; color: #333333; line-height: 1.6; text-align: center;">
+            Bonjour <strong th:text="${providerFirstName} + ' ' + ${providerLastName}"></strong>,<br><br>
+            Vous avez reçu une nouvelle demande de collaboration de la part de <strong th:text="${customerFirstName} + ' ' + ${customerLastName}"></strong>.<br>
+            <br>
+            <div style="font-size: 16px; margin: 20px 0;">
+                <strong>Service demandé :</strong> <span th:text="${typeService}"></span><br>
+                <strong>Description du service :</strong> <span th:text="${description}"></span><br>
+                <strong>Tarif :</strong> <span th:text="${price}"></span> fcfa<br>
+                <strong>Durée estimée :</strong> <span th:text="${duration}"></span> heures<br>
+            </div>
+            <div style="font-size: 16px; margin: 20px 0;">
+                <strong>Client :</strong> <span th:text="${customerFirstName} + ' ' + ${customerLastName}"></span><br>
+                <strong>Statut de la demande :</strong> <span th:text="${status}"></span><br>
+                <strong>Date de création :</strong> <span th:text="${createAt}"></span><br>
+            </div>
+            Veuillez consulter votre espace pour accepter ou refuser cette demande.<br>
+        </div>
+        <div style="background-color: #D3FCF9; color: #666666; text-align: center; padding: 12px 20px; font-size: 14px;">
+            © 2024 Brobroli Tous droits réservés.
+        </div>
+    </div>
+</div>
+</body>
+</html>

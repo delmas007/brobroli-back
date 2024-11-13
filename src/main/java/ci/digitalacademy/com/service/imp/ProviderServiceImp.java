@@ -4,12 +4,14 @@ import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.model.Provider;
 import ci.digitalacademy.com.model.Role;
 import ci.digitalacademy.com.repository.ProviderRepository;
+import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ProviderService;
 import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.ProviderMapper;
+import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
 import ci.digitalacademy.com.web.exception.EntityNotFoundException;
 import ci.digitalacademy.com.web.exception.ErrorCodes;
@@ -37,27 +39,31 @@ public class ProviderServiceImp implements ProviderService {
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ValidationService validationService;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override
     public ProviderDTO saveProvider(ProviderDTO fileProviderDTO) throws IOException {
         Provider existingUser = providerRepository.findByUserUserName(fileProviderDTO.getUser().getUserName()).orElse(null);
         if (existingUser == null) {
-            RoleDTO role2 = new RoleDTO();
+            RoleDTO role2;
             BalanceDTO balanceDTO = new BalanceDTO();
             balanceDTO.setSum(0f);
-            role2.setRole(AuthorityConstants.PROVIDER);
+            role2= roleRepository.findByRole(AuthorityConstants.PROVIDER).map(roleMapper::fromEntity).orElse(null);
             if (fileProviderDTO.getUser() != null) {
                 fileProviderDTO.getUser().setRole(role2);
+                System.out.println("fileProviderDTO= " + fileProviderDTO.getUser().getRole());
                 fileProviderDTO.getUser().setPassword(bCryptPasswordEncoder.encode(fileProviderDTO.getUser().getPassword()));
             }
             fileProviderDTO.setBalance(balanceDTO);
             fileProviderDTO.setCreateAt(LocalDate.now());
             fileProviderDTO.setSlug(SlugifyUtils.generate(fileProviderDTO.getLastName()));
-            fileProviderDTO.getUser().setActif(true);
+            fileProviderDTO.getUser().setActif(false);
             Provider provider = providerMapper.toEntity(fileProviderDTO);
             ProviderDTO providerDTO = providerMapper.fromEntity(providerRepository.save(provider));
             validationService.registerProvider(providerDTO);
+            System.out.println("providerDTO = " + providerDTO.getUser().getRole());
             return providerDTO;
         }else {
             throw new EntityNotFoundException("Utilisateur existe deja", ErrorCodes.UTILISATEUR_DEJA_EXIST);
