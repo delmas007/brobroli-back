@@ -13,6 +13,6 @@ public enum ErrorCodes {
     CODE_EXPIRE(800),
     UTILISATEUR_NON_ACTIF(700),
     VALIDATION_NOT_FOUND(600),
-    TOKEN_INVALIDE(650);
+    TOKEN_INVALIDE(650), CUSTOMER_ALREADY_EXIST(601);
     private final int code;
 }

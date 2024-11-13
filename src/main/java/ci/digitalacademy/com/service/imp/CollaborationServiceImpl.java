@@ -1,5 +1,6 @@
 package ci.digitalacademy.com.service.imp;
 
+import ci.digitalacademy.com.model.Collaboration;
 import ci.digitalacademy.com.model.enume.CollaborationStatus;
 import ci.digitalacademy.com.model.enume.CustomerStatusService;
 import ci.digitalacademy.com.model.enume.ProviderStatusService;
@@ -7,6 +8,8 @@ import ci.digitalacademy.com.repository.CollaborationRepository;
 import ci.digitalacademy.com.service.*;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CollaborationMapper;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,19 +36,26 @@ public class CollaborationServiceImpl implements CollaborationService {
 
     @Override
     public CollaborationDTO save(Long id_service, Long id_customer) {
+        Optional<Collaboration> existingCollaboration = collaborationRepository.findByServiceIdAndCustomerId(id_service, id_customer);
         log.debug("Request to save Collaboration");
         Optional<CustomerDTO> oneCustomer = customerService.findOneCustomer(id_customer);
         Optional<ServiceDTO> oneService = serviceService.findOneById(id_service);
         CustomerDTO customerDTO = oneCustomer.get();
         ServiceDTO serviceDTO = oneService.get();
-        if(customerDTO.getBalance()==null || customerDTO.getBalance().getSum()<serviceDTO.getPrice()){
+        if (customerDTO.getBalance() == null || customerDTO.getBalance().getSum() < serviceDTO.getPrice()) {
             return null;
-        }else {
+        } else if (existingCollaboration.isPresent()) {
+            Collaboration collaboration = existingCollaboration.get();
+            if (collaboration.getStatus().equals(CollaborationStatus.ACCEPTE) || collaboration.getStatus().equals(CollaborationStatus.EN_ATTENTE)) {
+                throw new EntityNotFoundException("Collaboration existe deja", ErrorCodes.CUSTOMER_ALREADY_EXIST);
+            }
+        } else {
             CollaborationDTO collaborationDTO = getCollaborationDTO(serviceDTO, customerDTO);
             CollaborationDTO save = save(collaborationDTO);
             notificationMailService.sendNotificationMailCollaborationAttente(save);
             return save(save);
         }
+        return null;
     }
 
     @Override

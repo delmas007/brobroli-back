@@ -1,0 +1,22 @@
+image: maven
+stages:
+  - test-api-brobroli
+  - docker-push-hub
+
+test-api-brobroli:
+  stage: test-api-brobroli
+  only:
+    refs:
+      - develop
+      - main
+  script:
+    - mvn test
+
+deploy-to-docker-hub:
+  stage: docker-push-hub
+  only: 
+    refs:
+      - main
+  script:
+    - mvn install jib:build -Djib.to.image=delmas007/api-forum -Djib.to.auth.username=${DOCKER_HUB_USERNAME} -Djib.to.auth.password=${DOCKER_HUB_PASSWORD}
+    - mvn install jib:build -Djib.to.image=delmas007/api-forum:$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) -Djib.to.auth.username=${DOCKER_HUB_USERNAME} -Djib.to.auth.password=${DOCKER_HUB_PASSWORD}

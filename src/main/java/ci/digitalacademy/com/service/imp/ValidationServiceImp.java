@@ -17,6 +17,7 @@ import ci.digitalacademy.com.service.mapper.ProviderMapper;
 import ci.digitalacademy.com.service.mapper.ValidationMapper;
 import ci.digitalacademy.com.web.exception.EntityNotFoundException;
 import ci.digitalacademy.com.web.exception.ErrorCodes;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -145,6 +146,7 @@ public class ValidationServiceImp implements ValidationService {
     }
 
     @Override
+    @Transactional
     public void deleteByCustomer(CustomerDTO customerDTO) {
         Optional<Validation> validation = validationRepository.findByCustomer(customerMapper.toEntity(customerDTO));
         validation.ifPresent(value -> validationRepository.deleteById(value.getId()));
