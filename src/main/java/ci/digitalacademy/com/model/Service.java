@@ -1,5 +1,6 @@
 package ci.digitalacademy.com.model;
 
+import ci.digitalacademy.com.model.enume.ServiceStatus;
 import ci.digitalacademy.com.model.enume.TypeService;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,6 +18,8 @@ public class Service {
     private Long id;
     @Enumerated(EnumType.STRING)
     private TypeService typeService;
+    @Enumerated(EnumType.STRING)
+    private ServiceStatus status = ServiceStatus.EN_ATTENTE;
     private String description;
     private Float price;
     private Float duration;

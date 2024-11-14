@@ -1,5 +1,6 @@
 package ci.digitalacademy.com.service.imp;
 
+import ci.digitalacademy.com.model.enume.ServiceStatus;
 import ci.digitalacademy.com.model.enume.TypeService;
 import ci.digitalacademy.com.repository.ServiceRepository;
 import ci.digitalacademy.com.service.ProviderService;
@@ -30,6 +31,7 @@ public class ServiceServiceImp implements ServiceService {
     public ServiceDTO save(ServiceDTO serviceDTO) {
         log.debug("Saving new service: {}", serviceDTO);
         return serviceMapper.fromEntity(serviceRepository.save(serviceMapper.toEntity(serviceDTO)));
+
     }
 
     public ServiceDTO saveService(ServiceDTO serviceDTO, Long id) {
@@ -37,6 +39,7 @@ public class ServiceServiceImp implements ServiceService {
         Optional<ProviderDTO> provider = providerService.findOneById(id);
         if (provider.isPresent()){
             serviceDTO.setProvider(provider.get());
+            serviceDTO.setStatus(ServiceStatus.EN_ATTENTE);
             return serviceMapper.fromEntity(serviceRepository.save(serviceMapper.toEntity(serviceDTO)));
         }
         return null;
@@ -60,7 +63,6 @@ public class ServiceServiceImp implements ServiceService {
             return save(serviceDTO1);
         }).orElse(null);
     }
-
     @Override
     public Optional<ServiceDTO> findOneById(Long id) {
         return serviceRepository.findById(id).map(service -> {
