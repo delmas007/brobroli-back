@@ -39,9 +39,11 @@ public class ProviderResource {
     }
 
     @PutMapping("/{id}")
-    public ProviderDTO update(@ModelAttribute FileProviderDTO provider, @PathVariable Long id) throws IOException {
-        log.debug("REST request to update: {}", provider);
-        return providerService.update(provider, id);
+    public ResponseEntity<ProviderDTO> updateProvider(
+            @PathVariable Long id,
+            @ModelAttribute FileProviderDTO fileProviderDTO) throws IOException {
+        ProviderDTO providerDTO = providerService.uploadProviderImage(id, fileProviderDTO);
+        return ResponseEntity.ok(providerDTO);
     }
 
 

@@ -5,9 +5,7 @@ import ci.digitalacademy.com.repository.CustomerRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
-import ci.digitalacademy.com.service.dto.CustomerDTO;
-import ci.digitalacademy.com.service.dto.FileCustomerDTO;
-import ci.digitalacademy.com.service.dto.RoleDTO;
+import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
 import lombok.Getter;
@@ -39,21 +37,21 @@ public class CustomerServiceImp implements CustomerService {
 
 
     @Override
-    public CustomerDTO saveCustomer(CustomerDTO customerDTO) throws IOException {
-        log.debug("Saving new customer: {}", customerDTO);
+    public CustomerDTO saveCustomer(FileCustomerDTO fileCustomerDTO) throws IOException {
+        log.debug("Saving new customer: {}", fileCustomerDTO);
         RoleDTO role2 = new RoleDTO();
         role2.setRole(AuthorityConstants.CUSTOMER);
-        if (customerDTO.getUser() != null){
-            customerDTO.getUser().setRole(role2);
-            customerDTO.getUser().setPassword(bCryptPasswordEncoder.encode(customerDTO.getUser().getPassword()));
+        if (fileCustomerDTO.getUser() != null){
+            fileCustomerDTO.getUser().setRole(role2);
+            fileCustomerDTO.getUser().setPassword(bCryptPasswordEncoder.encode(fileCustomerDTO.getUser().getPassword()));
         }
-        customerDTO.setCreateAt(LocalDate.now());
-        customerDTO.setSlug(SlugifyUtils.generate(customerDTO.getFirstName()));
-//        if (customerDTO.getFileurlImage() != null && !customerDTO.getFileurlImage().isEmpty()) {
-//            String imageUrl = filtreStorageService.upload(customerDTO.getFileurlImage());
-//            customerDTO.setUrlProfil(imageUrl);
-//        }
-        Customer customer = customerMapper.toEntity(customerDTO);
+        fileCustomerDTO.setCreateAt(LocalDate.now());
+        fileCustomerDTO.setSlug(SlugifyUtils.generate(fileCustomerDTO.getFirstName()));
+        if (fileCustomerDTO.getFileurlImage() != null && !fileCustomerDTO.getFileurlImage().isEmpty()) {
+            String imageUrl = filtreStorageService.upload(fileCustomerDTO.getFileurlImage());
+            fileCustomerDTO.setUrlProfil(imageUrl);
+        }
+        Customer customer = customerMapper.toEntity(fileCustomerDTO );
         customer = repository.save(customer);
         return customerMapper.fromEntity(customer);
     }
@@ -151,5 +149,40 @@ public class CustomerServiceImp implements CustomerService {
         return customerRepository.findBySlug(slug).map(customer ->
                 customerMapper.fromEntity(customer));
 
+    }
+
+    @Override
+    public CustomerDTO uploadCustumerImage(Long id, FileCustomerDTO fileCustomerDTO) throws IOException {
+        Optional<CustomerDTO> optionalcustumer = findOneCustomer(id);
+        CustomerDTO customerDTO = optionalcustumer.orElseThrow(() ->
+                new IllegalArgumentException("Custumer not found with id: " + id)
+        );
+
+        if (fileCustomerDTO.getFirstName() != null) {
+            customerDTO.setCity(fileCustomerDTO.getCity());
+        }
+
+        if (fileCustomerDTO.getFileurlImage() != null && !fileCustomerDTO.getFileurlImage().isEmpty()) {
+            String urlImage = filtreStorageService.upload(fileCustomerDTO.getFileurlImage());
+            customerDTO.setUrlProfil(urlImage);
+        }
+
+        if (fileCustomerDTO.getLastName() != null) {
+            customerDTO.setLastName(fileCustomerDTO.getLastName());
+        }
+
+        if (fileCustomerDTO.getBalance() != null) {
+            customerDTO.setBalance(fileCustomerDTO.getBalance());
+        }
+        if (fileCustomerDTO.getBiographie() != null) {
+            customerDTO.setBiographie(fileCustomerDTO.getBiographie());
+        }
+        if (fileCustomerDTO.getEmail() != null) {
+            customerDTO.setEmail(fileCustomerDTO.getEmail());
+        }
+        if (fileCustomerDTO.getStreet() != null) {
+            customerDTO.setStreet(fileCustomerDTO.getStreet());
+        }
+        return save(customerDTO);
     }
 }

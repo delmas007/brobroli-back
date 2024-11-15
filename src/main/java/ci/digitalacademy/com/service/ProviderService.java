@@ -1,5 +1,7 @@
 package ci.digitalacademy.com.service;
 
+import ci.digitalacademy.com.service.dto.AddInformationDTO;
+import ci.digitalacademy.com.service.dto.FileAddInformationDTO;
 import ci.digitalacademy.com.service.dto.FileProviderDTO;
 import ci.digitalacademy.com.service.dto.ProviderDTO;
 
@@ -10,7 +12,7 @@ import java.util.Optional;
 public interface ProviderService {
 
     ProviderDTO save( ProviderDTO  providerDTO);
-    ProviderDTO saveProvider(ProviderDTO  fileProviderDTO) throws IOException;
+    ProviderDTO saveProvider(FileProviderDTO  fileProviderDTO) throws IOException;
 
     ProviderDTO update( FileProviderDTO  providerDTO)throws IOException;
 
@@ -22,6 +24,8 @@ public interface ProviderService {
     List< ProviderDTO> findAll();
 
     ProviderDTO update( FileProviderDTO  providerDTO, Long id) throws IOException;
+
+    ProviderDTO uploadProviderImage(Long id , FileProviderDTO fileProviderDTO) throws IOException;
 
 
 }
