@@ -36,23 +36,14 @@ public class BrobroliApplication implements CommandLineRunner {
         if (all.isEmpty()){
             Role role = new Role();
             Role role2 = new Role();
+            Role role3 = new Role();
+            role3.setRole(AuthorityConstants.ADMIN);
             role2.setRole(AuthorityConstants.CUSTOMER);
             role.setRole(AuthorityConstants.PROVIDER);
             roleRepository.save(role);
             roleRepository.save(role2);
+            roleRepository.save(role3);
         }
-
-        UserDTO user = new UserDTO();
-        user.setUserName("Delon");
-        user.setPassword("delon");
-        user.setRememberMe(true);
-
-        FileProviderDTO provider = new FileProviderDTO();
-        provider.setFirstName("sidik");
-        provider.setEmail("soum@gmail.com");
-        provider.setCity("Gagnoa");
-        provider.setUser(user);
-        providerService.saveProvider(provider);
 
     }
 

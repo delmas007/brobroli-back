@@ -1,7 +1,7 @@
 package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.enume.ServiceStatus;
-import ci.digitalacademy.com.model.enume.ServiceType;
+import ci.digitalacademy.com.model.enume.TypeService;
 import ci.digitalacademy.com.repository.ServiceRepository;
 import ci.digitalacademy.com.service.ProviderService;
 import ci.digitalacademy.com.service.ServiceService;
@@ -48,8 +48,8 @@ public class ServiceServiceImp implements ServiceService {
     @Override
     public ServiceDTO update(ServiceDTO serviceDTO) {
         return findOneById(serviceDTO.getId()).map(serviceDTO1 -> {
-            if (serviceDTO.getServiceType() != null){
-                serviceDTO1.setServiceType(serviceDTO.getServiceType());
+            if (serviceDTO.getTypeService() != null){
+                serviceDTO1.setTypeService(serviceDTO.getTypeService());
             }
             if (serviceDTO.getPrice() != null){
                 serviceDTO1.setPrice(serviceDTO.getPrice());
@@ -97,16 +97,16 @@ public class ServiceServiceImp implements ServiceService {
 
     @Override
     public List<ServiceDTO> searchServicesByTypeAndPriceRange(String serviceType, Float minPrice, Float maxPrice) {
-        ServiceType serviceType1 = ServiceType.valueOf(serviceType);
-        return serviceRepository.findByServiceTypeAndPriceBetween(serviceType1, minPrice, maxPrice).stream().map(service -> {
+        TypeService typeService1 = TypeService.valueOf(serviceType);
+        return serviceRepository.findByServiceTypeAndPriceBetween(typeService1, minPrice, maxPrice).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }
 
     @Override
     public List<ServiceDTO> searchServicesByType(String serviceType) {
-        ServiceType serviceType1 = ServiceType.valueOf(serviceType);
-        return serviceRepository.findByServiceType(serviceType1).stream().map(service -> {
+        TypeService typeService1 = TypeService.valueOf(serviceType);
+        return serviceRepository.findByServiceType(typeService1).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }
