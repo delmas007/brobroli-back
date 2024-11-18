@@ -2,15 +2,15 @@ package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.repository.CustomerRepository;
+import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
+import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
-import ci.digitalacademy.com.web.exception.EntityNotFoundException;
-import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,15 +37,18 @@ public class CustomerServiceImp implements CustomerService {
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ValidationService validationService;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override
     public CustomerDTO saveCustomer(FileCustomerDTO fileCustomerDTO) throws IOException {
         log.debug("Saving new customer: {}", fileCustomerDTO);
         RoleDTO role2 = new RoleDTO();
-        role2.setRole(AuthorityConstants.CUSTOMER);
+        role2= roleRepository.findByRole(AuthorityConstants.CUSTOMER).map(roleMapper::fromEntity).orElse(null);
         if (fileCustomerDTO.getUser() != null){
             fileCustomerDTO.getUser().setRole(role2);
+            fileCustomerDTO.getUser().setActif(false);
             fileCustomerDTO.getUser().setPassword(bCryptPasswordEncoder.encode(fileCustomerDTO.getUser().getPassword()));
         }
         fileCustomerDTO.setCreateAt(LocalDate.now());
@@ -56,7 +57,7 @@ public class CustomerServiceImp implements CustomerService {
             String imageUrl = filtreStorageService.upload(fileCustomerDTO.getFileurlImage());
             fileCustomerDTO.setUrlProfil(imageUrl);
         }
-        Customer customer = customerMapper.toEntity(fileCustomerDTO );
+        Customer customer = customerMapper.toEntity(fileCustomerDTO);
         customer = repository.save(customer);
         CustomerDTO customerDTO1 = customerMapper.fromEntity(customer);
         validationService.registerCustomer(customerDTO1);
@@ -72,11 +73,46 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
+    public CustomerDTO uploadCustumerImage(Long id, FileCustomerDTO fileCustomerDTO) throws IOException {
+        Optional<CustomerDTO> optionalcustumer = findOneCustomer(id);
+        CustomerDTO customerDTO = optionalcustumer.orElseThrow(() ->
+                new IllegalArgumentException("Custumer not found with id: " + id)
+        );
+
+        if (fileCustomerDTO.getFirstName() != null) {
+            customerDTO.setCity(fileCustomerDTO.getCity());
+        }
+
+        if (fileCustomerDTO.getFileurlImage() != null && !fileCustomerDTO.getFileurlImage().isEmpty()) {
+            String urlImage = filtreStorageService.upload(fileCustomerDTO.getFileurlImage());
+            customerDTO.setUrlProfil(urlImage);
+        }
+
+        if (fileCustomerDTO.getLastName() != null) {
+            customerDTO.setLastName(fileCustomerDTO.getLastName());
+        }
+
+        if (fileCustomerDTO.getBalance() != null) {
+            customerDTO.setBalance(fileCustomerDTO.getBalance());
+        }
+        if (fileCustomerDTO.getBiographie() != null) {
+            customerDTO.setBiographie(fileCustomerDTO.getBiographie());
+        }
+        if (fileCustomerDTO.getEmail() != null) {
+            customerDTO.setEmail(fileCustomerDTO.getEmail());
+        }
+        if (fileCustomerDTO.getStreet() != null) {
+            customerDTO.setStreet(fileCustomerDTO.getStreet());
+        }
+        return save(customerDTO);
+    }
+
+    @Override
     public List<CustomerDTO> findAllcustomer() {
         log.debug("Finding all customers");
         return customerRepository.findAll().stream().map(customer -> {
-                 return customerMapper.fromEntity(customer);
-                }).toList();
+            return customerMapper.fromEntity(customer);
+        }).toList();
     }
 
     @Override
@@ -156,40 +192,5 @@ public class CustomerServiceImp implements CustomerService {
         return customerRepository.findBySlug(slug).map(customer ->
                 customerMapper.fromEntity(customer));
 
-    }
-
-    @Override
-    public CustomerDTO uploadCustumerImage(Long id, FileCustomerDTO fileCustomerDTO) throws IOException {
-        Optional<CustomerDTO> optionalcustumer = findOneCustomer(id);
-        CustomerDTO customerDTO = optionalcustumer.orElseThrow(() ->
-                new IllegalArgumentException("Custumer not found with id: " + id)
-        );
-
-        if (fileCustomerDTO.getFirstName() != null) {
-            customerDTO.setCity(fileCustomerDTO.getCity());
-        }
-
-        if (fileCustomerDTO.getFileurlImage() != null && !fileCustomerDTO.getFileurlImage().isEmpty()) {
-            String urlImage = filtreStorageService.upload(fileCustomerDTO.getFileurlImage());
-            customerDTO.setUrlProfil(urlImage);
-        }
-
-        if (fileCustomerDTO.getLastName() != null) {
-            customerDTO.setLastName(fileCustomerDTO.getLastName());
-        }
-
-        if (fileCustomerDTO.getBalance() != null) {
-            customerDTO.setBalance(fileCustomerDTO.getBalance());
-        }
-        if (fileCustomerDTO.getBiographie() != null) {
-            customerDTO.setBiographie(fileCustomerDTO.getBiographie());
-        }
-        if (fileCustomerDTO.getEmail() != null) {
-            customerDTO.setEmail(fileCustomerDTO.getEmail());
-        }
-        if (fileCustomerDTO.getStreet() != null) {
-            customerDTO.setStreet(fileCustomerDTO.getStreet());
-        }
-        return save(customerDTO);
     }
 }

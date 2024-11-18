@@ -98,7 +98,7 @@ public class ServiceServiceImp implements ServiceService {
     @Override
     public List<ServiceDTO> searchServicesByTypeAndPriceRange(String serviceType, Float minPrice, Float maxPrice) {
         TypeService typeService1 = TypeService.valueOf(serviceType);
-        return serviceRepository.findByServiceTypeAndPriceBetween(typeService1, minPrice, maxPrice).stream().map(service -> {
+        return serviceRepository.findByTypeServiceAndPriceBetween(typeService1, minPrice, maxPrice).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }
@@ -106,7 +106,7 @@ public class ServiceServiceImp implements ServiceService {
     @Override
     public List<ServiceDTO> searchServicesByType(String serviceType) {
         TypeService typeService1 = TypeService.valueOf(serviceType);
-        return serviceRepository.findByServiceType(typeService1).stream().map(service -> {
+        return serviceRepository.findByTypeService(typeService1).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }

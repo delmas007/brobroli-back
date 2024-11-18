@@ -2,13 +2,7 @@ package ci.digitalacademy.com;
 
 import ci.digitalacademy.com.model.Role;
 import ci.digitalacademy.com.repository.RoleRepository;
-import ci.digitalacademy.com.repository.UserRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
-import ci.digitalacademy.com.service.ProviderService;
-import ci.digitalacademy.com.service.UserService;
-import ci.digitalacademy.com.service.dto.FileProviderDTO;
-import ci.digitalacademy.com.service.dto.ProviderDTO;
-import ci.digitalacademy.com.service.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,10 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrobroliApplication implements CommandLineRunner {
     private final RoleRepository roleRepository;
-
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final ProviderService providerService;
 
 
     public static void main(String[] args) {
@@ -44,7 +34,6 @@ public class BrobroliApplication implements CommandLineRunner {
             roleRepository.save(role2);
             roleRepository.save(role3);
         }
-
     }
 
 }

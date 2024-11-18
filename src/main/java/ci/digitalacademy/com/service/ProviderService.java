@@ -1,7 +1,5 @@
 package ci.digitalacademy.com.service;
 
-import ci.digitalacademy.com.service.dto.AddInformationDTO;
-import ci.digitalacademy.com.service.dto.FileAddInformationDTO;
 import ci.digitalacademy.com.service.dto.FileProviderDTO;
 import ci.digitalacademy.com.service.dto.ProviderDTO;
 
@@ -16,6 +14,8 @@ public interface ProviderService {
 
     ProviderDTO update( FileProviderDTO  providerDTO)throws IOException;
 
+    ProviderDTO uploadProviderImage(Long id, FileProviderDTO fileProviderDTO) throws IOException;
+
     Optional< ProviderDTO> findOneById(Long id);
     Optional< ProviderDTO> findByUserId(Long id);
 
@@ -25,7 +25,6 @@ public interface ProviderService {
 
     ProviderDTO update( FileProviderDTO  providerDTO, Long id) throws IOException;
 
-    ProviderDTO uploadProviderImage(Long id , FileProviderDTO fileProviderDTO) throws IOException;
 
 
 }

@@ -30,6 +30,8 @@ public class ProviderResource {
         return new ResponseEntity<>(providerService.saveProvider(fileProviderDTO), HttpStatus.CREATED);
     }
 
+
+
     @PostMapping("/addInformation")
     public ResponseEntity<AddInformationDTO> saveAddInformation(
             @ModelAttribute FileAddInformationDTO fileAddInformationDTO) throws IOException {
