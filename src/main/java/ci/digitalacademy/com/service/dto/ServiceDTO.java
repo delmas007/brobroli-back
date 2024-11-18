@@ -1,7 +1,7 @@
 package ci.digitalacademy.com.service.dto;
 
 import ci.digitalacademy.com.model.enume.ServiceStatus;
-import ci.digitalacademy.com.model.enume.ServiceType;
+import ci.digitalacademy.com.model.enume.TypeService;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ServiceDTO {
     private Long id;
-    private ServiceType serviceType;
+    private TypeService typeService;
     private ServiceStatus status;
     private String description;
     private Float price;
