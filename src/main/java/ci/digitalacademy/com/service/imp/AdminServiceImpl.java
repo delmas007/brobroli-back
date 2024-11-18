@@ -46,20 +46,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void valid(Long id_serive) {
+    public void valid(Long seriveId) {
         log.debug("Request to accept Service");
-        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(id_serive);
+        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(seriveId);
         if (serviceDTO.isPresent()){
             ServiceDTO service = serviceDTO.get();
-            service.setStatus(ServiceStatus.VALIDE);
+            service.setStatus(ServiceStatus.VALID);
             serviceService.save(service);
         }
 
     }
 
     @Override
-    public void reject(Long id_service) {
-        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(id_service);
+    public void reject(Long seriveId) {
+        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(seriveId);
         if (serviceDTO.isPresent()){
             ServiceDTO service = serviceDTO.get();
             service.setStatus(ServiceStatus.REFUSE);

@@ -1,7 +1,7 @@
 package ci.digitalacademy.com.model.enume;
 
 public enum ServiceStatus {
-    EN_ATTENTE,
-    VALIDE,
+    ON_HOLD,
+    VALID,
     REFUSE
 }

@@ -20,14 +20,14 @@ public class AdminResource {
         log.debug("REST request to find all");
         return adminService.numberListUser();
     }
-    @PutMapping("/service/valid/{id_service}")
-    public void validSercice(@PathVariable long id_service) {
-        log.debug("REST, Request to accept Service : {}", id_service);
-        adminService.valid(id_service);
+    @PutMapping("/service/valid/{seriveId}")
+    public void validSercice(@PathVariable long seriveId) {
+        log.debug("REST, Request to accept Service : {}", seriveId);
+        adminService.valid(seriveId);
     }
-    @PutMapping("/service/reject/{id_service}")
-    public void rejectService(@PathVariable long id_service) {
-        log.debug("REST, Request to reject Service : {}", id_service);
-        adminService.reject(id_service);
+    @PutMapping("/service/reject/{seriveId}")
+    public void rejectService(@PathVariable long seriveId) {
+        log.debug("REST, Request to reject Service : {}", seriveId);
+        adminService.reject(seriveId);
     }
 }

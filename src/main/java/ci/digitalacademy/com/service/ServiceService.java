@@ -1,7 +1,5 @@
 package ci.digitalacademy.com.service;
 
-import ci.digitalacademy.com.model.enume.TypeService;
-import ci.digitalacademy.com.service.dto.ServiceDTO;
 import ci.digitalacademy.com.service.dto.ServiceDTO;
 
 import java.util.List;

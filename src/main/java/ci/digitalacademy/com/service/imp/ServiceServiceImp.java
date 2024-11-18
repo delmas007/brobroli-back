@@ -1,7 +1,7 @@
 package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.enume.ServiceStatus;
-import ci.digitalacademy.com.model.enume.TypeService;
+import ci.digitalacademy.com.model.enume.ServiceType;
 import ci.digitalacademy.com.repository.ServiceRepository;
 import ci.digitalacademy.com.service.ProviderService;
 import ci.digitalacademy.com.service.ServiceService;
@@ -39,7 +39,7 @@ public class ServiceServiceImp implements ServiceService {
         Optional<ProviderDTO> provider = providerService.findOneById(id);
         if (provider.isPresent()){
             serviceDTO.setProvider(provider.get());
-            serviceDTO.setStatus(ServiceStatus.EN_ATTENTE);
+            serviceDTO.setStatus(ServiceStatus.ON_HOLD);
             return serviceMapper.fromEntity(serviceRepository.save(serviceMapper.toEntity(serviceDTO)));
         }
         return null;
@@ -48,8 +48,8 @@ public class ServiceServiceImp implements ServiceService {
     @Override
     public ServiceDTO update(ServiceDTO serviceDTO) {
         return findOneById(serviceDTO.getId()).map(serviceDTO1 -> {
-            if (serviceDTO.getTypeService() != null){
-                serviceDTO1.setTypeService(serviceDTO.getTypeService());
+            if (serviceDTO.getServiceType() != null){
+                serviceDTO1.setServiceType(serviceDTO.getServiceType());
             }
             if (serviceDTO.getPrice() != null){
                 serviceDTO1.setPrice(serviceDTO.getPrice());
@@ -96,17 +96,17 @@ public class ServiceServiceImp implements ServiceService {
     }
 
     @Override
-    public List<ServiceDTO> searchServicesByTypeAndPriceRange(String typeService, Float minPrice, Float maxPrice) {
-        TypeService typeService1 = TypeService.valueOf(typeService);
-        return serviceRepository.findByTypeServiceAndPriceBetween(typeService1, minPrice, maxPrice).stream().map(service -> {
+    public List<ServiceDTO> searchServicesByTypeAndPriceRange(String serviceType, Float minPrice, Float maxPrice) {
+        ServiceType serviceType1 = ServiceType.valueOf(serviceType);
+        return serviceRepository.findByServiceTypeAndPriceBetween(serviceType1, minPrice, maxPrice).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }
 
     @Override
-    public List<ServiceDTO> searchServicesByType(String typeService) {
-        TypeService typeService1 = TypeService.valueOf(typeService);
-        return serviceRepository.findByTypeService(typeService1).stream().map(service -> {
+    public List<ServiceDTO> searchServicesByType(String serviceType) {
+        ServiceType serviceType1 = ServiceType.valueOf(serviceType);
+        return serviceRepository.findByServiceType(serviceType1).stream().map(service -> {
             return serviceMapper.fromEntity(service);
         }).toList();
     }
