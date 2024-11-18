@@ -4,10 +4,7 @@ package ci.digitalacademy.com.web.resources;
 import ci.digitalacademy.com.service.BalanceService;
 import ci.digitalacademy.com.service.CollaborationService;
 import ci.digitalacademy.com.service.CustomerService;
-import ci.digitalacademy.com.service.dto.BalanceDTO;
-import ci.digitalacademy.com.service.dto.CollaborationDTO;
-import ci.digitalacademy.com.service.dto.CustomerDTO;
-import ci.digitalacademy.com.service.dto.FileCustomerDTO;
+import ci.digitalacademy.com.service.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +43,11 @@ public class CustomerResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@ModelAttribute FileCustomerDTO customerDTO, @PathVariable long id) throws IOException {
-        log.debug("REST, Request to update Customer : {}", customerDTO, id);
-        return new ResponseEntity<>(customerService.updateCustomer(id, customerDTO), HttpStatus.OK);
+    public ResponseEntity<CustomerDTO> updateProvider(
+            @PathVariable Long id,
+            @ModelAttribute FileCustomerDTO fileCustomerDTO) throws IOException {
+        CustomerDTO customerDTO = customerService.uploadCustumerImage(id, fileCustomerDTO);
+        return ResponseEntity.ok(customerDTO);
     }
 
   @GetMapping

@@ -101,23 +101,20 @@ public class AuthenticateResource {
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
         }
 
-
-
     }
 
     @PostMapping("/providers")
-    public ResponseEntity<ProviderDTO> saveProvider(@RequestBody ProviderDTO fileProviderDTO) throws IOException {
+    public ResponseEntity<ProviderDTO> saveProvider(@ModelAttribute FileProviderDTO fileProviderDTO) throws IOException {
         log.debug("REST request to save provider: {}", fileProviderDTO);
         System.out.println("Received User: " + fileProviderDTO.getUser());
         return new ResponseEntity<>(providerService.saveProvider(fileProviderDTO), HttpStatus.CREATED);
     }
 
+
     @PostMapping("/customers")
-    @ApiResponse(responseCode = "201", description = "Request to save customer")
-    @Operation(summary = "save new customer", description = "This endpoint allow to save customer")
-    public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customerDTO) throws IOException {
-        log.debug("REST, Request to save Customer : {}", customerDTO);
-        return new ResponseEntity<>(customerService.saveCustomer(customerDTO), HttpStatus.CREATED);
+    public ResponseEntity<CustomerDTO> saveCustumer(@ModelAttribute FileCustomerDTO fileCustomerDTO) throws IOException {
+        log.debug("REST request to save provider: {}", fileCustomerDTO);
+        return new ResponseEntity<>(customerService.saveCustomer(fileCustomerDTO), HttpStatus.CREATED);
     }
 }
 
