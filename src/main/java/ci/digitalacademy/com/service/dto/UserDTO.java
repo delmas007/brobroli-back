@@ -12,4 +12,5 @@ public class UserDTO {
     private String password;
     private RoleDTO role;
     private Boolean rememberMe;
+    private Boolean actif;
 }

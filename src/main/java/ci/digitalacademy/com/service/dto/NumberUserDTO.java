@@ -14,4 +14,5 @@ public class NumberUserDTO {
     private Integer numberCustomer;
     private List<ProviderDTO> listProvider;
     private List<CustomerDTO> listCustomer;
+    private Integer numberProviderWithService;
 }

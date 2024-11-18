@@ -1,15 +1,20 @@
 package ci.digitalacademy.com.service.imp;
 
+import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.model.Provider;
 import ci.digitalacademy.com.model.Role;
 import ci.digitalacademy.com.repository.ProviderRepository;
+import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ProviderService;
+import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.ProviderMapper;
+import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
-import jakarta.persistence.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +38,9 @@ public class ProviderServiceImp implements ProviderService {
     private final ProviderMapper providerMapper;
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ValidationService validationService;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override

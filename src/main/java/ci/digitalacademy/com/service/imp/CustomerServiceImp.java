@@ -2,12 +2,17 @@ package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.repository.CustomerRepository;
+import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
+import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
+import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
+import ci.digitalacademy.com.web.exception.EntityNotFoundException;
+import ci.digitalacademy.com.web.exception.ErrorCodes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +40,9 @@ public class CustomerServiceImp implements CustomerService {
     private final CustomerRepository customerRepository;
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ValidationService validationService;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override
@@ -53,7 +62,9 @@ public class CustomerServiceImp implements CustomerService {
         }
         Customer customer = customerMapper.toEntity(fileCustomerDTO );
         customer = repository.save(customer);
-        return customerMapper.fromEntity(customer);
+        CustomerDTO customerDTO1 = customerMapper.fromEntity(customer);
+        validationService.registerCustomer(customerDTO1);
+        return customerDTO1;
     }
 
     @Override
