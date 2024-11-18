@@ -1,11 +1,15 @@
 package ci.digitalacademy.com.web.resources;
+
+import ci.digitalacademy.com.service.CustomerService;
+import ci.digitalacademy.com.service.ProviderService;
 import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.UpdatePasswordDTO;
+import ci.digitalacademy.com.service.dto.ValidationDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/validation")
+@RequestMapping("/validation")
 @RequiredArgsConstructor
 public class ValidationRessource {
     private final ValidationService validationService;

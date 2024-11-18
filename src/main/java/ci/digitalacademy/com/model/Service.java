@@ -1,6 +1,7 @@
 package ci.digitalacademy.com.model;
 
-import ci.digitalacademy.com.model.enume.TypeService;
+import ci.digitalacademy.com.model.enume.ServiceStatus;
+import ci.digitalacademy.com.model.enume.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,9 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private TypeService typeService;
+    private ServiceType serviceType;
+    @Enumerated(EnumType.STRING)
+    private ServiceStatus status = ServiceStatus.ON_HOLD;
     private String description;
     private Float price;
     private Float duration;

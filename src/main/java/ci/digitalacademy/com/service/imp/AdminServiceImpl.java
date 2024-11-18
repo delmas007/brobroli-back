@@ -1,19 +1,18 @@
 package ci.digitalacademy.com.service.imp;
 
-import ci.digitalacademy.com.service.AdminService;
-import ci.digitalacademy.com.service.CustomerService;
-import ci.digitalacademy.com.service.ProviderService;
-import ci.digitalacademy.com.service.UserService;
-import ci.digitalacademy.com.service.dto.CustomerDTO;
-import ci.digitalacademy.com.service.dto.NumberUserDTO;
-import ci.digitalacademy.com.service.dto.ProviderDTO;
-import ci.digitalacademy.com.service.dto.UserDTO;
+import ci.digitalacademy.com.model.enume.CollaborationStatus;
+import ci.digitalacademy.com.model.enume.CustomerStatusService;
+import ci.digitalacademy.com.model.enume.ProviderStatusService;
+import ci.digitalacademy.com.model.enume.ServiceStatus;
+import ci.digitalacademy.com.service.*;
+import ci.digitalacademy.com.service.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -24,6 +23,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserService userService;
     private final CustomerService customerService;
     private final ProviderService providerService;
+    private final ServiceService serviceService;
     @Override
     public NumberUserDTO numberListUser() {
         NumberUserDTO numberUserDTO = new NumberUserDTO();
@@ -43,5 +43,28 @@ public class AdminServiceImpl implements AdminService {
         });
         numberUserDTO.setNumberProviderWithService(listProviders.size());
         return numberUserDTO;
+    }
+
+    @Override
+    public void valid(Long seriveId) {
+        log.debug("Request to accept Service");
+        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(seriveId);
+        if (serviceDTO.isPresent()){
+            ServiceDTO service = serviceDTO.get();
+            service.setStatus(ServiceStatus.VALID);
+            serviceService.save(service);
+        }
+
+    }
+
+    @Override
+    public void reject(Long seriveId) {
+        Optional<ServiceDTO> serviceDTO = serviceService.findOneById(seriveId);
+        if (serviceDTO.isPresent()){
+            ServiceDTO service = serviceDTO.get();
+            service.setStatus(ServiceStatus.REFUSE);
+            serviceService.save(service);
+        }
+
     }
 }

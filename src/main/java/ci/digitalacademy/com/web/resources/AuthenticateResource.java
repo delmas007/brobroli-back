@@ -76,38 +76,29 @@ public class AuthenticateResource {
 
         if (authorities.contains("SCOPE_PROVIDER")){
             Optional<ProviderDTO> byUserId = providerService.findByUserId(userDTO.getId());
-            if (byUserId.isPresent()){
-                ProviderDTO providerDTO = byUserId.get();
-                JwtClaimsSet claims = JwtClaimsSet.builder()
-                        .issuedAt(now)
-                        .expiresAt(validity)
-                        .subject(authentication.getName())
-                        .claim(SecurityUtils.AUTHORITIES_KEY, authorities)
-                        .claim("id",providerDTO.getId())
-                        .build();
-                JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
-                return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-            }else {
-                return null;
-            }
+            ProviderDTO providerDTO = byUserId.get();
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuedAt(now)
+                    .expiresAt(validity)
+                    .subject(authentication.getName())
+                    .claim(SecurityUtils.AUTHORITIES_KEY, authorities)
+                    .claim("id",providerDTO.getId())
+                    .build();
+            JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
+            return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
         }
         else{
             Optional<CustomerDTO> byUserId = customerService.findByUserId(userDTO.getId());
-            if (byUserId.isPresent()){
-                CustomerDTO customerDTO = byUserId.get();
-                JwtClaimsSet claims = JwtClaimsSet.builder()
-                        .issuedAt(now)
-                        .expiresAt(validity)
-                        .subject(authentication.getName())
-                        .claim(SecurityUtils.AUTHORITIES_KEY, authorities)
-                        .claim("id",customerDTO.getId())
-                        .build();
-                JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
-                return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-            }
-            else {
-                return null;
-            }
+            CustomerDTO customerDTO = byUserId.get();
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuedAt(now)
+                    .expiresAt(validity)
+                    .subject(authentication.getName())
+                    .claim(SecurityUtils.AUTHORITIES_KEY, authorities)
+                    .claim("id",customerDTO.getId())
+                    .build();
+            JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
+            return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
         }
 
     }
@@ -115,8 +106,8 @@ public class AuthenticateResource {
     @PostMapping("/providers")
     public ResponseEntity<ProviderDTO> saveProvider(@ModelAttribute FileProviderDTO fileProviderDTO) throws IOException {
         log.debug("REST request to save provider: {}", fileProviderDTO);
-        ProviderDTO provider = providerService.saveProvider(fileProviderDTO);
-        return new ResponseEntity<>(provider, HttpStatus.CREATED);
+        System.out.println("Received User: " + fileProviderDTO.getUser());
+        return new ResponseEntity<>(providerService.saveProvider(fileProviderDTO), HttpStatus.CREATED);
     }
 
 

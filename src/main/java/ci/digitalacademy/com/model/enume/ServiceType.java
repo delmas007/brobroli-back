@@ -1,6 +1,6 @@
 package ci.digitalacademy.com.model.enume;
 
-public enum TypeService {
+public enum ServiceType {
     DEVELOPPEMENT_WEB,
     DEVELOPPEMENT_MOBILE,
     DESIGN_GRAPHIQUE,

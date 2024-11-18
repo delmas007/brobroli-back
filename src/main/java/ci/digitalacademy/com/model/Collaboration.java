@@ -14,9 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(
-        uniqueConstraints = @UniqueConstraint(columnNames = {"service_id", "status"})
-)
+@Table
 public class Collaboration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,6 @@ public class Collaboration {
     private ProviderStatusService providerStatusService;
 
     @OneToOne
-    @JoinColumn(name = "service_id")
     private Service service;
 
     @ManyToOne

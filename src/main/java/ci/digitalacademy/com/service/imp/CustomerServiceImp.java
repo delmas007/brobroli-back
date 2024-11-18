@@ -2,14 +2,12 @@ package ci.digitalacademy.com.service.imp;
 
 import ci.digitalacademy.com.model.Customer;
 import ci.digitalacademy.com.repository.CustomerRepository;
-import ci.digitalacademy.com.repository.RoleRepository;
 import ci.digitalacademy.com.security.AuthorityConstants;
 import ci.digitalacademy.com.service.CustomerService;
 import ci.digitalacademy.com.service.FiltreStorageService;
 import ci.digitalacademy.com.service.ValidationService;
 import ci.digitalacademy.com.service.dto.*;
 import ci.digitalacademy.com.service.mapper.CustomerMapper;
-import ci.digitalacademy.com.service.mapper.RoleMapper;
 import ci.digitalacademy.com.utils.SlugifyUtils;
 import ci.digitalacademy.com.web.exception.EntityNotFoundException;
 import ci.digitalacademy.com.web.exception.ErrorCodes;
@@ -41,8 +39,6 @@ public class CustomerServiceImp implements CustomerService {
     private final FiltreStorageService filtreStorageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ValidationService validationService;
-    private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
 
 
     @Override
