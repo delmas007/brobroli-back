@@ -56,7 +56,7 @@ public class CustomerResource {
     @GetMapping
     public List<CustomerDTO> getAllCustomers() {
         log.debug("REST, Request to get all customers");
-        return customerService.findAllcustomer();
+        return customerService.findAll();
     }
 
     @GetMapping("/id/{id}")

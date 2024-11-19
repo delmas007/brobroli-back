@@ -108,7 +108,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public List<CustomerDTO> findAllcustomer() {
+    public List<CustomerDTO> findAll() {
         log.debug("Finding all customers");
         return customerRepository.findAll().stream().map(customer -> {
             return customerMapper.fromEntity(customer);
@@ -192,5 +192,21 @@ public class CustomerServiceImp implements CustomerService {
         return customerRepository.findBySlug(slug).map(customer ->
                 customerMapper.fromEntity(customer));
 
+    }
+
+    @Override
+    public void activateCustomer(Long id) {
+        customerRepository.findById(id).ifPresent(customer -> {
+            customer.getUser().setActif(true);
+            customerRepository.save(customer);
+        });
+    }
+
+    @Override
+    public void deactivateCustomer(Long id) {
+        customerRepository.findById(id).ifPresent(customer -> {
+            customer.getUser().setActif(false);
+            customerRepository.save(customer);
+        });
     }
 }

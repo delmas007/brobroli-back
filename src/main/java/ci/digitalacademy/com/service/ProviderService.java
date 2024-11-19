@@ -25,6 +25,9 @@ public interface ProviderService {
 
     ProviderDTO update( FileProviderDTO  providerDTO, Long id) throws IOException;
 
+    void activateProvider(Long id);
+    void deactivateProvider(Long id);
+
 
 
 }
