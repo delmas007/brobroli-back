@@ -1,8 +1,5 @@
 package ci.digitalacademy.com.service.imp;
 
-import ci.digitalacademy.com.model.enume.CollaborationStatus;
-import ci.digitalacademy.com.model.enume.CustomerStatusService;
-import ci.digitalacademy.com.model.enume.ProviderStatusService;
 import ci.digitalacademy.com.model.enume.ServiceStatus;
 import ci.digitalacademy.com.service.*;
 import ci.digitalacademy.com.service.dto.*;
@@ -29,7 +26,7 @@ public class AdminServiceImpl implements AdminService {
         NumberUserDTO numberUserDTO = new NumberUserDTO();
         List<UserDTO> listUser = userService.findAll();
         List<ProviderDTO> listProvider = providerService.findAll();
-        List<CustomerDTO> listCustomer = customerService.findAllcustomer();
+        List<CustomerDTO> listCustomer = customerService.findAll();
         numberUserDTO.setNumberUser(listUser.size());
         numberUserDTO.setNumberProvider(listProvider.size());
         numberUserDTO.setNumberCustomer(listCustomer.size());

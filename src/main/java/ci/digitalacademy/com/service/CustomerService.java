@@ -15,7 +15,7 @@ public interface CustomerService {
 
     CustomerDTO uploadCustumerImage(Long id, FileCustomerDTO fileCustomerDTO) throws IOException;
 
-    List<CustomerDTO> findAllcustomer();
+    List<CustomerDTO> findAll();
 
     CustomerDTO updateCustomer(FileCustomerDTO customerDTO) ;
 
@@ -25,5 +25,7 @@ public interface CustomerService {
     Optional<CustomerDTO> findByUserId(Long id);
 
     Optional<CustomerDTO> getCustomerBySlug(String slug);
+    void activateCustomer(Long id);
+    void deactivateCustomer(Long id);
 
 }

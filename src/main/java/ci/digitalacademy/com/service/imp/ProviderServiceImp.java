@@ -54,7 +54,7 @@ public class ProviderServiceImp implements ProviderService {
                     String imageUrl = filtreStorageService.upload(fileProviderDTO.getFileurlImage());
                     fileProviderDTO.setUrlProfil(imageUrl);
                 } catch (Exception e) {
-                    throw new EntityNotFoundException("Utilisateur existe deja", ErrorCodes.UTILISATEUR_DEJA_EXIST);
+                    throw new EntityNotFoundException("Impossible de telecharger l'image", ErrorCodes.FILE_NOT_FOUND);
                 }
             }
             fileProviderDTO.setBalance(balanceDTO);
@@ -163,6 +163,22 @@ public class ProviderServiceImp implements ProviderService {
         providerDTO.setId(id);
         return update(providerDTO);
 
+    }
+
+    @Override
+    public void activateProvider(Long id) {
+        providerRepository.findById(id).ifPresent(provider -> {
+            provider.getUser().setActif(true);
+            providerRepository.save(provider);
+        });
+    }
+
+    @Override
+    public void deactivateProvider(Long id) {
+        providerRepository.findById(id).ifPresent(provider -> {
+            provider.getUser().setActif(false);
+            providerRepository.save(provider);
+        });
     }
 
     private ProviderDTO extracted(FileProviderDTO providerDTO, ProviderDTO existingProvider) {
