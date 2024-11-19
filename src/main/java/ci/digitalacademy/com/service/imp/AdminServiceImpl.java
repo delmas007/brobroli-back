@@ -1,8 +1,5 @@
 package ci.digitalacademy.com.service.imp;
 
-import ci.digitalacademy.com.model.enume.CollaborationStatus;
-import ci.digitalacademy.com.model.enume.CustomerStatusService;
-import ci.digitalacademy.com.model.enume.ProviderStatusService;
 import ci.digitalacademy.com.model.enume.ServiceStatus;
 import ci.digitalacademy.com.service.*;
 import ci.digitalacademy.com.service.dto.*;
@@ -24,17 +21,28 @@ public class AdminServiceImpl implements AdminService {
     private final CustomerService customerService;
     private final ProviderService providerService;
     private final ServiceService serviceService;
+    private final IncomeService incomeService;
+
     @Override
     public NumberUserDTO numberListUser() {
         NumberUserDTO numberUserDTO = new NumberUserDTO();
         List<UserDTO> listUser = userService.findAll();
         List<ProviderDTO> listProvider = providerService.findAll();
-        List<CustomerDTO> listCustomer = customerService.findAllcustomer();
-        numberUserDTO.setNumberUser(listUser.size());
+        List<CustomerDTO> listCustomer = customerService.findAll();
         numberUserDTO.setNumberProvider(listProvider.size());
         numberUserDTO.setNumberCustomer(listCustomer.size());
+        numberUserDTO.setNumberUser(numberUserDTO.getNumberCustomer()+ numberUserDTO.getNumberProvider());
+        if (numberUserDTO.getNumberUser() != 0) {
+            numberUserDTO.setPourcentageCustomer((numberUserDTO.getNumberCustomer() * 100) / numberUserDTO.getNumberUser());
+            numberUserDTO.setPourcentageProvider((numberUserDTO.getNumberProvider() * 100) / numberUserDTO.getNumberUser());
+        } else {
+            numberUserDTO.setPourcentageCustomer(0);
+            numberUserDTO.setPourcentageProvider(0);
+        }
+        numberUserDTO.setNumberServiceEnAttente(serviceService.findAll().stream().map(ServiceDTO::getStatus).filter(ServiceStatus.ON_HOLD::equals).count());
         numberUserDTO.setListProvider(listProvider);
         numberUserDTO.setListCustomer(listCustomer);
+        numberUserDTO.setRevenue(incomeService.findAll().stream().map(IncomeDTO::getRevenu).reduce(0.0F, Float::sum));
         List<ProviderDTO> listProviders = new ArrayList<>();
         listProvider.forEach(providerDTO -> {
             if (providerDTO.getService() != null){

@@ -5,6 +5,9 @@ import ci.digitalacademy.com.model.enume.TypeService;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +27,7 @@ public class Service {
     private Float price;
     private Float duration;
     private String slug;
+    private LocalDate createAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "provider_id")
