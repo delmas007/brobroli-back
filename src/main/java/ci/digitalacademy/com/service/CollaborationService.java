@@ -9,6 +9,7 @@ public interface CollaborationService {
     CollaborationDTO save(Long id_service,Long id_customer);
     CollaborationDTO save(CollaborationDTO collaborationDTO);
     Optional<CollaborationDTO> findOne(Long id);
+    List<CollaborationDTO> findAll();
     void accept(Long id_collaboration);
     void reject(Long id_collaboration);
     void annuler(Long id_collaboration);

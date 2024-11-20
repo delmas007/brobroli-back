@@ -30,6 +30,8 @@ public class CollaborationServiceImpl implements CollaborationService {
     private final InterimBalanceService interimBalanceService;
     private final BalanceService balanceService;
     private final NotificationMailService notificationMailService;
+    private final IncomeService incomeService;
+
 
     @Override
     public CollaborationDTO save(Long id_service, Long id_customer) {
@@ -61,6 +63,11 @@ public class CollaborationServiceImpl implements CollaborationService {
     }
 
     @Override
+    public List<CollaborationDTO> findAll() {
+        return collaborationRepository.findAll().stream().map(collaborationMapper::fromEntity).toList();
+    }
+
+    @Override
     public void accept(Long id_collaboration) {
         log.debug("Request to accept Collaboration");
         Optional<CollaborationDTO> collaborationDTO = findOne(id_collaboration);
@@ -80,6 +87,16 @@ public class CollaborationServiceImpl implements CollaborationService {
         if (collaborationDTO.isPresent()){
             CollaborationDTO collaboration = collaborationDTO.get();
             collaboration.setStatus(CollaborationStatus.REFUSE);
+            Optional<InterimBalanceDTO> byId = interimBalanceService.getById(collaboration.getInterimBalance().getId());
+            if (byId.isEmpty()){
+                return;
+            }
+            customerService.findOneCustomer(collaboration.getCustomer().getId()).ifPresent(customerDTO -> {
+                customerDTO.getBalance().setSum(customerDTO.getBalance().getSum()+byId.get().getSum());
+                customerService.save(customerDTO);
+            });
+            byId.get().setSum(0f);
+            interimBalanceService.save(byId.get());
             save(collaboration);
             notificationMailService.sendNotificationMailCollaborationRefuser(collaboration);
         }
@@ -91,6 +108,16 @@ public class CollaborationServiceImpl implements CollaborationService {
         if (collaborationDTO.isPresent()){
             CollaborationDTO collaboration = collaborationDTO.get();
             collaboration.setStatus(CollaborationStatus.ANNULER);
+            Optional<InterimBalanceDTO> byId = interimBalanceService.getById(collaboration.getInterimBalance().getId());
+            if (byId.isEmpty()){
+                return;
+            }
+            customerService.findOneCustomer(collaboration.getCustomer().getId()).ifPresent(customerDTO -> {
+                customerDTO.getBalance().setSum(customerDTO.getBalance().getSum()+byId.get().getSum());
+                customerService.save(customerDTO);
+            });
+            byId.get().setSum(0f);
+            interimBalanceService.save(byId.get());
             save(collaboration);
             notificationMailService.sendNotificationMailCollaborationAnnuler(collaboration);
         }
@@ -123,6 +150,10 @@ public class CollaborationServiceImpl implements CollaborationService {
                         + (collaborationDTO.getInterimBalance().getSum() * 0.97f);
                 collaborationDTO.getService().getProvider().getBalance().setSum(newSum);
                 balanceService.save(collaborationDTO.getService().getProvider().getBalance());
+                incomeService.findAll().stream().findFirst().ifPresent(incomeDTO -> {
+                    incomeDTO.setRevenu(incomeDTO.getRevenu()+ collaborationDTO.getService().getPrice()*0.03f);
+                    incomeService.save(incomeDTO);
+                });
                 collaborationDTO.setStatus(CollaborationStatus.TERMINE);
             }
             save(collaborationDTO);
@@ -141,6 +172,10 @@ public class CollaborationServiceImpl implements CollaborationService {
                 Float newSum = collaborationDTO.getService().getProvider().getBalance().getSum()
                         + (collaborationDTO.getInterimBalance().getSum() * 0.97f);
                 collaborationDTO.getService().getProvider().getBalance().setSum(newSum);
+                incomeService.findAll().stream().findFirst().ifPresent(incomeDTO -> {
+                    incomeDTO.setRevenu(incomeDTO.getRevenu()+ collaborationDTO.getService().getProvider().getBalance().getSum()* 0.03f);
+                    incomeService.save(incomeDTO);
+                });
                 balanceService.save(collaborationDTO.getService().getProvider().getBalance());
             }
             save(collaborationDTO);

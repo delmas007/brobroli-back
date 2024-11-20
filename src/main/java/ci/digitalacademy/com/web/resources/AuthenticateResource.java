@@ -91,7 +91,7 @@ public class AuthenticateResource {
                 return null;
             }
         }
-        else{
+        else if (authorities.contains("SCOPE_CUSTOMER")){
             Optional<CustomerDTO> byUserId = customerService.findByUserId(userDTO.getId());
             if (byUserId.isPresent()){
                 CustomerDTO customerDTO = byUserId.get();
@@ -105,13 +105,20 @@ public class AuthenticateResource {
                 JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
                 return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
             }
-            else {
-                return null;
-            }
         }
-
-
-
+        else if (authorities.contains("SCOPE_ADMIN")){
+            UserDTO byUserName = userService.getByUserName(authentication.getName());
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuedAt(now)
+                    .expiresAt(validity)
+                    .subject(authentication.getName())
+                    .claim(SecurityUtils.AUTHORITIES_KEY, authorities)
+                    .claim("id",byUserName.getId())
+                    .build();
+            JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
+            return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+        }
+        return null;
     }
 
     @PostMapping("/providers")

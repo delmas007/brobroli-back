@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class ServiceDTO {
@@ -16,6 +18,7 @@ public class ServiceDTO {
     private Float price;
     private Float duration;
     private String slug;
+    private LocalDate createAt;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private ProviderDTO provider;
 //    @JsonIgnore
