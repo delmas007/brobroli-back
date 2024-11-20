@@ -78,9 +78,12 @@ public class CustomerServiceImp implements CustomerService {
         CustomerDTO customerDTO = optionalcustumer.orElseThrow(() ->
                 new IllegalArgumentException("Custumer not found with id: " + id)
         );
-
-        if (fileCustomerDTO.getFirstName() != null) {
+        customerDTO.setUpdateAt(LocalDate.now());
+        if (fileCustomerDTO.getCity() != null) {
             customerDTO.setCity(fileCustomerDTO.getCity());
+        }
+        if (fileCustomerDTO.getFirstName() != null) {
+            customerDTO.setFirstName(fileCustomerDTO.getFirstName());
         }
 
         if (fileCustomerDTO.getFileurlImage() != null && !fileCustomerDTO.getFileurlImage().isEmpty()) {
@@ -90,6 +93,9 @@ public class CustomerServiceImp implements CustomerService {
 
         if (fileCustomerDTO.getLastName() != null) {
             customerDTO.setLastName(fileCustomerDTO.getLastName());
+        }
+        if (fileCustomerDTO.getTel() != null) {
+            customerDTO.setTel(fileCustomerDTO.getTel());
         }
 
         if (fileCustomerDTO.getBalance() != null) {

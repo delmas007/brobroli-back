@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/validation")
+@RequestMapping("/api/validation")
 @RequiredArgsConstructor
 public class ValidationRessource {
     private final ValidationService validationService;

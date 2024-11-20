@@ -14,6 +14,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class ServiceServiceImp implements ServiceService {
         if (provider.isPresent()){
             serviceDTO.setProvider(provider.get());
             serviceDTO.setStatus(ServiceStatus.ON_HOLD);
+            serviceDTO.setCreateAt(LocalDate.now());
             return serviceMapper.fromEntity(serviceRepository.save(serviceMapper.toEntity(serviceDTO)));
         }
         return null;

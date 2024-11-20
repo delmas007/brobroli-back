@@ -41,7 +41,7 @@ public class AdminResource {
         log.debug("REST, Request to reject Service : {}", seriveId);
         adminService.reject(seriveId);
     }
-    @GetMapping("/services")
+    @GetMapping("/service")
     public List<ServiceDTO> findAllServices(){
         log.debug("REST request to find all");
         return serviceService.findAll();

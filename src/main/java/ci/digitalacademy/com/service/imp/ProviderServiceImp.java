@@ -95,11 +95,13 @@ public class ProviderServiceImp implements ProviderService {
         ProviderDTO providerDTO = optionalProvider.orElseThrow(() ->
                 new IllegalArgumentException("rovider not found with id: " + id)
         );
-
+        providerDTO.setUpdateAt(LocalDate.now());
         if (fileProviderDTO.getFirstName() != null) {
-            providerDTO.setCity(fileProviderDTO.getCity());
+            providerDTO.setFirstName(fileProviderDTO.getFirstName());
         }
-
+        if (fileProviderDTO.getTel() != null) {
+            providerDTO.setTel(fileProviderDTO.getTel());
+        }
         if (fileProviderDTO.getFileurlImage() != null && !fileProviderDTO.getFileurlImage().isEmpty()) {
             String urlImage = filtreStorageService.upload(fileProviderDTO.getFileurlImage());
             providerDTO.setUrlProfil(urlImage);
