@@ -134,5 +134,11 @@ public class AuthenticateResource {
         log.debug("REST request to save provider: {}", fileCustomerDTO);
         return new ResponseEntity<>(customerService.saveCustomer(fileCustomerDTO), HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOneById(@PathVariable Long id){
+        log.debug("REST request to get one by id: {}", id);
+        return new ResponseEntity<>(providerService.findOneById(id),HttpStatus.OK );
+    }
 }
 
